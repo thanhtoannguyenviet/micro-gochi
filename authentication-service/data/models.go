@@ -28,7 +28,7 @@ type User struct {
 	FirstName string    `json:"firstName"`
 	LastName  string    `json:"lastName"`
 	Password  string    `json:"-"`
-	Active    int       `json:"active"`
+	Active    bool      `json:"active"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -88,10 +88,8 @@ func (u *User) GetByEmail(email string) (*User, error) {
 	ctx, canel := context.WithTimeout(context.Background(), dbTimeout)
 	defer canel()
 	query := `select id, email, first_name, last_name, password, user_active, created_at, updated_at from users where email = $1`
-
 	var user User
-	row := db.QueryRowContext(ctx, query, email)
-	err := row.Scan(
+	err := db.QueryRowContext(ctx, query, email).Scan(
 		&user.ID,
 		&user.Email,
 		&user.FirstName,
@@ -101,6 +99,7 @@ func (u *User) GetByEmail(email string) (*User, error) {
 		&user.CreatedAt,
 		&user.UpdatedAt,
 	)
+
 	if err != nil {
 		return nil, err
 	}
@@ -181,6 +180,8 @@ func (u *User) ResetPassword(pasword string) error {
 	return nil
 }
 func (u *User) PasswordMatches(plainText string) (bool, error) {
+	//hash, _ := bcrypt.GenerateFromPassword([]byte(u.Password), 12)
+	//print(hash)
 	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(plainText))
 	if err != nil {
 		switch {
