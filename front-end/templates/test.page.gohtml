@@ -78,7 +78,7 @@
                 headers:headers
             }
 
-            fetch("http:\/\/127.0.0.1:8081/", body)
+            fetch("http:\/\/127.0.0.1:8080/handle", body)
                 .then((response) => response.json())
                 .then((data) => {
                     sent.innerHTML = JSON.stringify(payload,undefined,4);
