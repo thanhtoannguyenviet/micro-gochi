@@ -36,12 +36,14 @@ services:
 
   mailer-service:
     build:
-      context: ./../mail-service
-      dockerfile: ./../mail-service/mail-service.dockerfile
+      context: ../mailer-service
+      dockerfile: ../mailer-service/mailer-service.dockerfile
     restart: always
     deploy:
       mode: replicated
       replicas: 1
+    ports:
+      - "10250:80"
     environment:
       MAIL_DOMAIN: localhost
       MAIL_HOST: mailhog
@@ -50,7 +52,7 @@ services:
       MAIL_USERNAME: ""
       MAIL_PASSWORD: ""
       MAIL_NAME:  "Nguyen Viet Thanh Toan"
-      MAIL_ADDRESS: "toan.nguyen@example.com"
+      MAIL_ADDRESS: toan.nguyen@example.com
 
   postgres:
     image: 'postgres:14.0'
@@ -66,7 +68,19 @@ services:
       POSTGRES_DB: users
     volumes:
       - ./db-data/postgres/:/var/lib/postgresql/data/
-
+  mysql-server:
+    image: 'mysql:latest'
+    ports:
+      - "3306:3306"
+      - "33060:33060"
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      MYSQL_ROOT_PASSWORD: droplets2022@Myteam
+    volumes:
+      - ./db-data/postgres/:/var/lib/postgresql/data/
   mongo:
     image: 'mongo:4.2.16-bionic'
     ports:
