@@ -71,6 +71,7 @@ func (app *Config) rpcListen() error {
 	for {
 		rpcConn, err := listen.Accept()
 		if err != nil {
+			log.Println(err)
 			continue
 		}
 		go rpc.ServeConn(rpcConn)
