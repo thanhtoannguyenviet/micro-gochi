@@ -1,6 +1,17 @@
 version: '1'
 
 services:
+  caddy-service:
+    image: toandeveloper99/micro-gochi-caddy:v1.0.1
+    deploy:
+      mode: replicated
+      replicas: 1
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./caddy_data:/data
+      - ./caddy_config:/config
   broker-service:
     build:
       context: ../broker-service
@@ -33,6 +44,14 @@ services:
       replicas: 1
     environment:
       DSN: "host=postgres port=5432 user=postgres password=password dbname=users sslmode=disable timezone=UTC connect_timeout=5"
+
+  frontend-service:
+    build:
+      context: ./../front-end
+      dockerfile: ./../front-end/frontend-service.dockerfile
+    deploy:
+      mode: replicated
+      replicas: 1
 
   listener-service:
     build:
@@ -118,3 +137,8 @@ services:
       replicas: 1
     volumes:
       - ./db-data/rabbitmq/:/var/lib.rabbitmq/
+
+volumes:
+  caddy_data:
+    external: true
+  caddy_config:
