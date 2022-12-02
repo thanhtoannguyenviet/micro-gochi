@@ -21,9 +21,10 @@ Referrer-Policy no-referrer-when-downgrade
 }
 }
 
-swarm.learn-code.ca:80 {
+swarm.learn-code.ca {
     encode zstd gzip
     import static
+    import security
     reverse_proxy http://frontend-service:80
 }
 
