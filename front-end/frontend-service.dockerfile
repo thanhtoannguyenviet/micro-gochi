@@ -6,13 +6,13 @@ COPY . /app
 
 WORKDIR /app
 
-RUN CGO_ENABLED=0 go build -o frontend ./
+RUN CGO_ENABLED=0 go build -o frontendApp ./
 
-RUN chmod +x /app/frontend
+RUN chmod +x /app/frontendApp
 
 FROM alpine:latest
 
 RUN mkdir /app
 
-COPY --from=builder /app/frontend /app
-CMD ["/app/frontend"]
+COPY --from=builder /app/frontendApp /app
+CMD ["/app/frontendApp"]
